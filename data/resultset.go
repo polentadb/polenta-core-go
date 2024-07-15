@@ -1,7 +1,7 @@
 package data
 
 type Statistics struct {
-	count int
+	Count int
 }
 
 type ResultSet struct {
