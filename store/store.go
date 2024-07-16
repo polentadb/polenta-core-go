@@ -1,19 +1,39 @@
 package store
 
-type objectDefinition struct {
-	objectType string
-	fields     map[string]string
+type ColumnDefinition struct {
+	ColumnType      string
+	ColumnSize      int
+	ColumnPrecision int
 }
 
-type Storable interface {
+type CollectionDefinition struct {
+	collectionType string
+	columns        map[string]ColumnDefinition
 }
 
-var store map[string]objectDefinition = make(map[string]objectDefinition)
+var objects = make(map[string]string)
 
-func Add(name string, objectType string, fields map[string]string) {
-	var objectDef objectDefinition
-	objectDef.objectType = objectType
-	objectDef.fields = fields
+var collections = make(map[string]CollectionDefinition)
 
-	store[name] = objectDef
+func AddObject(name string, objectType string) string {
+	objType, hasObject := objects[name]
+	if hasObject {
+		if objType == objectType {
+			return objectType + " " + name + " already exists"
+		}
+	}
+	objects[name] = objectType
+	return "Created " + objectType + name
+}
+
+func AddCollection(name string, collectionType string, _ map[string]string) string {
+	objType, hasObject := objects[name]
+	if hasObject {
+		if objType == collectionType {
+			return collectionType + " " + name + " already exists"
+		}
+	}
+	objects[name] = collectionType
+	collections[name] = CollectionDefinition{collectionType: collectionType}
+	return "Created " + collectionType + name
 }

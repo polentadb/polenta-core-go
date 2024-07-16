@@ -16,16 +16,16 @@ type Executor interface {
 }
 
 func Create(statement string) (Executor, *int, *string) {
-	if strings.HasPrefix(strings.ToUpper(statement), "CREATE") {
+	if strings.HasPrefix(strings.ToUpper(statement), "CREATE ") {
 		return CreateExecutor{statement: statement}, nil, nil
 	}
-	if strings.HasPrefix(strings.ToUpper(statement), "SELECT") {
-		return SelectExecutor{statement: statement}, nil, nil
-	}
-	if strings.HasPrefix(strings.ToUpper(statement), "INSERT") {
+	if strings.HasPrefix(strings.ToUpper(statement), "INSERT ") {
 		return InsertExecutor{statement: statement}, nil, nil
 	}
-	errcode := 1
-	err := "Invalid statement"
-	return nil, &errcode, &err
+	if strings.HasPrefix(strings.ToUpper(statement), "SELECT ") {
+		return SelectExecutor{statement: statement}, nil, nil
+	}
+	errCode := 1
+	err := "Invalid statement: " + statement
+	return nil, &errCode, &err
 }

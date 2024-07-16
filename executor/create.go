@@ -2,6 +2,7 @@ package executor
 
 import (
 	store "github.com/polentadb/polenta-core-go/store"
+	"strings"
 )
 
 type CreateExecutor struct {
@@ -9,23 +10,30 @@ type CreateExecutor struct {
 }
 
 func (s CreateExecutor) Execute() Response {
-	execute(s.statement)
-	return Response{Message: "Executed create statement"}
+	return Response{Message: execute(s.statement)}
 }
 
-func execute(statement string) {
+func execute(statement string) string {
 	objectType := findObjectType(statement)
 	objectName := findObjectName(statement)
-	objectFields := findObjectFields(statement)
-	store.Add(objectName, objectType, objectFields)
+	if objectType == "BAG" || objectType == "TABLE" {
+		objectFields := findObjectFields(statement)
+		return store.AddCollection(objectName, objectType, objectFields)
+	} else if objectType == "USER" {
+		return store.AddObject(objectName, objectType)
+	} else {
+		return "Object type " + objectType + " not supported"
+	}
 }
 
-func findObjectName(_ string) string {
-	return "TBD"
+func findObjectName(statement string) string {
+	parts := strings.Split(strings.ToUpper(statement), " ")
+	return strings.Trim(parts[2], " ")
 }
 
-func findObjectType(_ string) string {
-	return "bag"
+func findObjectType(statement string) string {
+	parts := strings.Split(strings.ToUpper(statement), " ")
+	return strings.Trim(parts[1], " ")
 }
 
 func findObjectFields(_ string) map[string]string {
