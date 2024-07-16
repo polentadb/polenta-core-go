@@ -19,21 +19,21 @@ func AddObject(name string, objectType string) string {
 	objType, hasObject := objects[name]
 	if hasObject {
 		if objType == objectType {
-			return objectType + " " + name + " already exists"
+			return objectType + " " + name + " ALREADY EXISTS"
 		}
 	}
 	objects[name] = objectType
-	return "Created " + objectType + name
+	return "CREATED " + objectType + " " + name
 }
 
 func AddCollection(name string, collectionType string, _ map[string]string) string {
 	objType, hasObject := objects[name]
 	if hasObject {
 		if objType == collectionType {
-			return collectionType + " " + name + " already exists"
+			return collectionType + " " + name + " ALREADY EXISTS"
 		}
 	}
 	objects[name] = collectionType
 	collections[name] = CollectionDefinition{collectionType: collectionType}
-	return "Created " + collectionType + name
+	return "CREATED " + collectionType + " " + name
 }

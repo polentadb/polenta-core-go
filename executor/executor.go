@@ -26,6 +26,6 @@ func Create(statement string) (Executor, *int, *string) {
 		return SelectExecutor{statement: statement}, nil, nil
 	}
 	errCode := 1
-	err := "Invalid statement: " + statement
+	err := "INVALID STATEMENT: " + statement
 	return nil, &errCode, &err
 }

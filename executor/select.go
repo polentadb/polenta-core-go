@@ -20,7 +20,7 @@ func (s SelectExecutor) Execute() Response {
 	sorted := sort(selected, orderBy)
 	resultSet := resultSet(sorted)
 
-	return Response{Message: "Executed select statement. Selected " + strconv.Itoa(resultSet.Statistics.Count) + " rows."}
+	return Response{Message: "EXECUTED SELECT STATEMENT. SELECTED " + strconv.Itoa(resultSet.Statistics.Count) + " ROWS."}
 }
 
 func selectFrom(_ string, _ string, _ string) []data.Row {

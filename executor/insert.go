@@ -5,5 +5,5 @@ type InsertExecutor struct {
 }
 
 func (s InsertExecutor) Execute() Response {
-	return Response{Message: "Executed insert statement"}
+	return Response{Message: "EXECUTED INSERT STATEMENT"}
 }

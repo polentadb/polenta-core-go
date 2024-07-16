@@ -22,7 +22,7 @@ func execute(statement string) string {
 	} else if objectType == "USER" {
 		return store.AddObject(objectName, objectType)
 	} else {
-		return "Object type " + objectType + " not supported"
+		return "OBJECT TYPE " + objectType + " NOT SUPPORTED"
 	}
 }
 
