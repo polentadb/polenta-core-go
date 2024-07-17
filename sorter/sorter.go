@@ -12,8 +12,6 @@ func (rows SortableRows) Sort(criteria string) SortableRows {
 	return sortBySelection(rows, criteria)
 }
 
-func exchange(rows SortableRows, i int, j int) {
-	temp := rows[i]
-	rows[i] = rows[j]
-	rows[j] = temp
+func (rows SortableRows) Exchange(i int, j int) {
+	rows[i], rows[j] = rows[j], rows[i]
 }
