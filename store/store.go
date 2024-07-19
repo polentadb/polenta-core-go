@@ -16,26 +16,24 @@ type CollectionDefinition struct {
 	columns        map[string]ColumnDefinition
 }
 
-type collectionRWLock sync.RWMutex
-
 var (
 	objects            = make(map[string]string)
 	collections        = make(map[string]CollectionDefinition)
 	objectsMapLock     = sync.Mutex{}
 	collectionsMapLock = sync.Mutex{}
-	collectionsRWLock  = make(map[string]collectionRWLock)
+	collectionsRWLock  = make(map[string]*sync.RWMutex)
 )
 
 func AcquireCollectionReadLock(collectionName string) {
 	fmt.Println("acquire lock for " + collectionName)
-	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
-	//aLock.RLock()
+	aLock := collectionsRWLock[collectionName]
+	aLock.RLock()
 }
 
 func ReleaseCollectionReadLock(collectionName string) {
 	fmt.Println("release lock for " + collectionName)
-	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
-	//aLock.RUnlock()
+	aLock := collectionsRWLock[collectionName]
+	aLock.RUnlock()
 }
 
 func AcquireCollectionWriteLock(collectionName string) {
