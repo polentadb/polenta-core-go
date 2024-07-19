@@ -36,12 +36,13 @@ func ReleaseCollectionReadLock(collectionName string) {
 
 func AcquireCollectionWriteLock(collectionName string) {
 	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
-	//aLock.Lock()
+	collectionsRWLock[collectionName].Lock()
 }
 
 func ReleaseCollectionWriteLock(collectionName string) {
 	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
 	//aLock.Unlock()
+	collectionsRWLock[collectionName].Unlock()
 }
 
 func HasCollection(collectionName string) bool {
