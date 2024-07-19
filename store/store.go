@@ -1,6 +1,9 @@
 package store
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 type ColumnDefinition struct {
 	ColumnType      string
@@ -24,18 +27,20 @@ var (
 )
 
 func AcquireCollectionReadLock(collectionName string) {
+	fmt.Println("acquire lock for " + collectionName)
 	aLock := sync.RWMutex(collectionsRWLock[collectionName])
 	aLock.RLock()
+}
+
+func ReleaseCollectionReadLock(collectionName string) {
+	fmt.Println("release lock for " + collectionName)
+	aLock := sync.RWMutex(collectionsRWLock[collectionName])
+	aLock.RUnlock()
 }
 
 func AcquireCollectionWriteLock(collectionName string) {
 	aLock := sync.RWMutex(collectionsRWLock[collectionName])
 	aLock.Lock()
-}
-
-func ReleaseCollectionReadLock(collectionName string) {
-	aLock := sync.RWMutex(collectionsRWLock[collectionName])
-	aLock.RUnlock()
 }
 
 func ReleaseCollectionWriteLock(collectionName string) {
@@ -65,5 +70,6 @@ func AddCollection(name string, collectionType string, _ map[string]string) stri
 		return collectionType + " " + name + " ALREADY EXISTS"
 	}
 	collections[name] = CollectionDefinition{collectionType: collectionType}
+	//collectionsRWLock[name] := sync.RWMutex{}
 	return "CREATED " + collectionType + " " + name
 }
