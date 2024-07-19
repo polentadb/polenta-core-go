@@ -28,14 +28,14 @@ var (
 
 func AcquireCollectionReadLock(collectionName string) {
 	fmt.Println("acquire lock for " + collectionName)
-	aLock := sync.RWMutex(collectionsRWLock[collectionName])
-	aLock.RLock()
+	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
+	//aLock.RLock()
 }
 
 func ReleaseCollectionReadLock(collectionName string) {
 	fmt.Println("release lock for " + collectionName)
-	aLock := sync.RWMutex(collectionsRWLock[collectionName])
-	aLock.RUnlock()
+	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
+	//aLock.RUnlock()
 }
 
 func AcquireCollectionWriteLock(collectionName string) {
