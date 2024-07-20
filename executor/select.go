@@ -20,8 +20,8 @@ func (s SelectExecutor) Execute() Response {
 		return Response{Error: fmt.Sprintf("No such bag or table: %s", collection)}
 	}
 
-	store.AcquireCollectionReadLock(collection)
-	defer store.ReleaseCollectionReadLock(collection)
+	//store.AcquireCollectionReadLock(collection)
+	//defer store.ReleaseCollectionReadLock(collection)
 
 	fields := "TBD"
 	where := "TBD"
