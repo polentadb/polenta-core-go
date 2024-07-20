@@ -35,13 +35,10 @@ func ReleaseCollectionReadLock(collectionName string) {
 }
 
 func AcquireCollectionWriteLock(collectionName string) {
-	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
 	collectionsRWLock[collectionName].Lock()
 }
 
 func ReleaseCollectionWriteLock(collectionName string) {
-	//aLock := sync.RWMutex(collectionsRWLock[collectionName])
-	//aLock.Unlock()
 	collectionsRWLock[collectionName].Unlock()
 }
 
@@ -67,5 +64,6 @@ func AddCollection(name string, collectionType string, _ map[string]string) stri
 		return collectionType + " " + name + " ALREADY EXISTS"
 	}
 	collections[name] = CollectionDefinition{collectionType: collectionType}
+	collectionsRWLock[name] = &sync.RWMutex{}
 	return "CREATED " + collectionType + " " + name
 }
