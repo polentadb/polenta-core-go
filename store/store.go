@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -25,12 +24,10 @@ var (
 )
 
 func AcquireCollectionReadLock(collectionName string) {
-	fmt.Println("acquire lock for " + collectionName)
 	collectionsRWLock[collectionName].RLock()
 }
 
 func ReleaseCollectionReadLock(collectionName string) {
-	fmt.Println("release lock for " + collectionName)
 	collectionsRWLock[collectionName].RUnlock()
 }
 
