@@ -15,13 +15,14 @@ type SelectExecutor struct {
 
 func (s SelectExecutor) Execute() Response {
 	collection := findCollectionName(s.statement)
-
 	if !store.HasCollection(collection) {
-		return Response{Error: fmt.Sprintf("No such bag or table: %s", collection)}
+		fmt.Println("ERROR: SELECT USED INVALID COLLECTION: " + collection)
+		return Response{Error: fmt.Sprintf("NO SUCH BAG OR TABLE: %s", collection)}
 	}
+	fmt.Println("DEBUG: SELECT FROM: " + collection)
 
-	//store.AcquireCollectionReadLock(collection)
-	//defer store.ReleaseCollectionReadLock(collection)
+	store.AcquireCollectionReadLock(collection)
+	defer store.ReleaseCollectionReadLock(collection)
 
 	fields := "TBD"
 	where := "TBD"
