@@ -14,9 +14,9 @@ type SelectExecutor struct {
 }
 
 func (s SelectExecutor) Execute() Response {
-	collection := findCollectionName(s.statement)
+	collection := findSelectCollectionName(s.statement)
 	if !store.HasCollection(collection) {
-		fmt.Println("ERROR: SELECT USED INVALID COLLECTION: " + collection)
+		fmt.Println("ERROR: SELECT FROM INVALID COLLECTION: " + collection)
 		return Response{Error: fmt.Sprintf("NO SUCH BAG OR TABLE: %s", collection)}
 	}
 	fmt.Println("DEBUG: SELECT FROM: " + collection)
@@ -35,7 +35,7 @@ func (s SelectExecutor) Execute() Response {
 	return Response{Message: "EXECUTED SELECT STATEMENT. SELECTED " + strconv.Itoa(resultSet.Statistics.Count) + " ROWS."}
 }
 
-func findCollectionName(sql string) string {
+func findSelectCollectionName(sql string) string {
 	upSql := strings.ToUpper(sql)
 	fromPos := strings.Index(upSql, "FROM")
 	wherePos := strings.Index(upSql, "WHERE")
@@ -44,7 +44,6 @@ func findCollectionName(sql string) string {
 	} else {
 		return upSql[fromPos+5 : wherePos-1]
 	}
-
 }
 
 func selectFrom(_ string, _ string, _ string) []data.Row {
