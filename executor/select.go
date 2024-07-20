@@ -17,7 +17,7 @@ func (s SelectExecutor) Execute() Response {
 	collection := findSelectCollectionName(s.statement)
 	if !store.HasCollection(collection) {
 		fmt.Println("ERROR: SELECT FROM INVALID COLLECTION: " + collection)
-		return Response{Error: fmt.Sprintf("NO SUCH BAG OR TABLE: %s", collection)}
+		return Response{Error: fmt.Sprintf("ERROR - INVALID SELECT - NO SUCH BAG OR TABLE: %s", collection)}
 	}
 	fmt.Println("DEBUG: SELECT FROM: " + collection)
 
@@ -27,12 +27,11 @@ func (s SelectExecutor) Execute() Response {
 	fields := "TBD"
 	where := "TBD"
 	orderBy := "TBD"
-	//rows := data.Rows{}
 	selected := selectFrom(collection, fields, where)
 	sorted := sort(selected, orderBy)
 	resultSet := resultSet(sorted)
 
-	return Response{Message: "EXECUTED SELECT STATEMENT. SELECTED " + strconv.Itoa(resultSet.Statistics.Count) + " ROWS."}
+	return Response{Message: "OK - EXECUTED SELECT STATEMENT. " + collection + ": SELECTED " + strconv.Itoa(resultSet.Statistics.Count) + " ROWS."}
 }
 
 func findSelectCollectionName(sql string) string {

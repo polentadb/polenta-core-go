@@ -14,14 +14,14 @@ func (s InsertExecutor) Execute() Response {
 	collection := findInsertCollectionName(s.statement)
 	if !store.HasCollection(collection) {
 		fmt.Println("ERROR: INSERT INTO INVALID COLLECTION: " + collection)
-		return Response{Error: fmt.Sprintf("NO SUCH BAG OR TABLE: %s", collection)}
+		return Response{Error: fmt.Sprintf("ERROR - INVALID INSERT - NO SUCH BAG OR TABLE: %s", collection)}
 	}
 	fmt.Println("DEBUG: INSERT INTO: " + collection)
 
 	store.AcquireCollectionWriteLock(collection)
 	defer store.ReleaseCollectionWriteLock(collection)
 
-	return Response{Message: "EXECUTED INSERT STATEMENT"}
+	return Response{Message: "OK - EXECUTED INSERT STATEMENT. INTO: " + collection}
 }
 
 func findInsertCollectionName(sql string) string {

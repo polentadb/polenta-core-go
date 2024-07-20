@@ -51,19 +51,19 @@ func AddObject(name string, objectType string) string {
 	objectsMapLock.Lock()
 	defer objectsMapLock.Unlock()
 	if objType, hasObject := objects[name]; hasObject && objType == objectType {
-		return objectType + " " + name + " ALREADY EXISTS"
+		return "ERROR - " + objectType + " " + name + " ALREADY EXISTS"
 	}
 	objects[name] = objectType
-	return "CREATED " + objectType + " " + name
+	return "OK - CREATED " + objectType + " " + name
 }
 
 func AddCollection(name string, collectionType string, _ map[string]string) string {
 	collectionsMapLock.Lock()
 	defer collectionsMapLock.Unlock()
 	if _, hasObject := collections[name]; hasObject {
-		return collectionType + " " + name + " ALREADY EXISTS"
+		return "ERROR - " + collectionType + " " + name + " ALREADY EXISTS"
 	}
 	collections[name] = CollectionDefinition{collectionType: collectionType}
 	collectionsRWLock[name] = &sync.RWMutex{}
-	return "CREATED " + collectionType + " " + name
+	return "OK - CREATED " + collectionType + " " + name
 }
