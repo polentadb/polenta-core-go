@@ -2,6 +2,7 @@ package store
 
 import (
 	"sync"
+	"sync/atomic"
 )
 
 type ColumnDefinition struct {
@@ -21,6 +22,7 @@ var (
 	objectsMapLock     = sync.Mutex{}
 	collectionsMapLock = sync.Mutex{}
 	collectionsRWLock  = make(map[string]*sync.RWMutex)
+	sequences          = make(map[string]int64)
 )
 
 func AcquireCollectionReadLock(collectionName string) {
@@ -63,4 +65,12 @@ func AddCollection(name string, collectionType string, _ map[string]string) stri
 	collections[name] = CollectionDefinition{collectionType: collectionType}
 	collectionsRWLock[name] = &sync.RWMutex{}
 	return "OK - CREATED " + collectionType + " " + name
+}
+
+func NewSequenceValue(collectionName string) int64 {
+	if sequence, hasObject := sequences[collectionName]; hasObject {
+		var inc int64 = 1
+		return atomic.AddInt64(&sequence, inc)
+	}
+	return 0
 }
