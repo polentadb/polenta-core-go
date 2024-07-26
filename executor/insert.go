@@ -16,23 +16,19 @@ func (s InsertExecutor) Execute() Response {
 		fmt.Println("ERROR: INSERT INTO INVALID COLLECTION: " + collectionName)
 		return Response{Error: fmt.Sprintf("ERROR - INVALID INSERT - NO SUCH BAG OR TABLE: %s", collectionName)}
 	}
-	fmt.Println("DEBUG: INSERT INTO: " + collectionName)
+	//fmt.Println("DEBUG: INSERT INTO: " + collectionName)
 
 	store.AcquireCollectionWriteLock(collectionName)
 	defer store.ReleaseCollectionWriteLock(collectionName)
 
-	colDef := store.GetCollection(collectionName)
+	//colDef := store.GetCollection(collectionName)
 
-	if hasSequenceColumn(colDef) {
+	if store.HasSequenceColumn(collectionName) {
 		sequenceNewValue := store.NewSequenceValue(collectionName)
 		fmt.Println(sequenceNewValue)
 	}
 
 	return Response{Message: "OK - EXECUTED INSERT STATEMENT. INTO: " + collectionName}
-}
-
-func hasSequenceColumn(_ store.CollectionDefinition) bool {
-	return false
 }
 
 func findInsertCollectionName(sql string) string {

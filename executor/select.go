@@ -19,7 +19,7 @@ func (s SelectExecutor) Execute() Response {
 		fmt.Println("ERROR: SELECT FROM INVALID COLLECTION: " + collection)
 		return Response{Error: fmt.Sprintf("ERROR - INVALID SELECT - NO SUCH BAG OR TABLE: %s", collection)}
 	}
-	fmt.Println("DEBUG: SELECT FROM: " + collection)
+	//fmt.Println("DEBUG: SELECT FROM: " + collection)
 
 	store.AcquireCollectionReadLock(collection)
 	defer store.ReleaseCollectionReadLock(collection)

@@ -13,8 +13,8 @@ type ColumnDefinition struct {
 }
 
 type CollectionDefinition struct {
-	collectionType string
-	columns        map[string]ColumnDefinition
+	CollectionType string
+	Columns        map[string]ColumnDefinition
 }
 
 var (
@@ -47,6 +47,16 @@ func HasCollection(collectionName string) bool {
 	return ok
 }
 
+func HasSequenceColumn(collectionName string) bool {
+	colDef := GetCollection(collectionName)
+	for _, value := range colDef.Columns {
+		if value.Type == "SEQUENCE" {
+			return true
+		}
+	}
+	return false
+}
+
 func AddUser(userName string) string {
 	usersMapLock.Lock()
 	defer usersMapLock.Unlock()
@@ -63,8 +73,11 @@ func AddCollection(collectionName string, collectionType string, columns map[str
 	if _, hasObject := collections[collectionName]; hasObject {
 		return "ERROR - " + collectionType + " " + collectionName + " ALREADY EXISTS"
 	}
-	collections[collectionName] = CollectionDefinition{collectionType: collectionType, columns: columns}
+	collections[collectionName] = CollectionDefinition{CollectionType: collectionType, Columns: columns}
 	collectionsRWLock[collectionName] = &sync.RWMutex{}
+	if HasSequenceColumn(collectionName) {
+		sequences[collectionName] = 0
+	}
 	return "OK - CREATED " + collectionType + " " + collectionName
 }
 
