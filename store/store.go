@@ -7,9 +7,9 @@ import (
 )
 
 type ColumnDefinition struct {
-	ColumnType      string
-	ColumnSize      int
-	ColumnPrecision int
+	Type      string
+	Size      int
+	Precision int
 }
 
 type CollectionDefinition struct {
@@ -57,13 +57,13 @@ func AddUser(userName string) string {
 	return "OK - CREATED USER " + userName
 }
 
-func AddCollection(collectionName string, collectionType string, _ map[string]string) string {
+func AddCollection(collectionName string, collectionType string, columns map[string]ColumnDefinition) string {
 	collectionsMapLock.Lock()
 	defer collectionsMapLock.Unlock()
 	if _, hasObject := collections[collectionName]; hasObject {
 		return "ERROR - " + collectionType + " " + collectionName + " ALREADY EXISTS"
 	}
-	collections[collectionName] = CollectionDefinition{collectionType: collectionType}
+	collections[collectionName] = CollectionDefinition{collectionType: collectionType, columns: columns}
 	collectionsRWLock[collectionName] = &sync.RWMutex{}
 	return "OK - CREATED " + collectionType + " " + collectionName
 }
