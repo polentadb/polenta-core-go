@@ -89,11 +89,13 @@ func GetCollection(collectionName string) CollectionDefinition {
 
 func NewSequenceValue(collectionName string) int64 {
 	fmt.Println("generating new sequence value", collectionName)
-	if sequence, hasObject := sequences[collectionName]; hasObject {
+	if _, hasObject := sequences[collectionName]; hasObject {
 		var inc int64 = 1
-		fmt.Println("current value", collectionName, sequence)
-		newValue := atomic.AddInt64(&sequence, inc)
+		fmt.Println("current value", collectionName, sequences[collectionName])
+		s := sequences[collectionName]
+		newValue := atomic.AddInt64(&s, inc)
 		fmt.Println("new value", collectionName, newValue)
+		fmt.Println("seq value", collectionName, sequences[collectionName])
 		return newValue
 	}
 	return 0
