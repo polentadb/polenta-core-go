@@ -1,6 +1,7 @@
 package store
 
 import (
+	"fmt"
 	"slices"
 	"sync"
 	"sync/atomic"
@@ -87,9 +88,13 @@ func GetCollection(collectionName string) CollectionDefinition {
 }
 
 func NewSequenceValue(collectionName string) int64 {
+	fmt.Println("generating new sequence value", collectionName)
 	if sequence, hasObject := sequences[collectionName]; hasObject {
 		var inc int64 = 1
-		return atomic.AddInt64(&sequence, inc)
+		fmt.Println("current value", collectionName, sequence)
+		newValue := atomic.AddInt64(&sequence, inc)
+		fmt.Println("new value", collectionName, newValue)
+		return newValue
 	}
 	return 0
 }
