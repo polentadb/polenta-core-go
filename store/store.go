@@ -7,9 +7,10 @@ import (
 )
 
 type ColumnDefinition struct {
-	Type      string
-	Size      int
-	Precision int
+	Type       string
+	Size       int
+	Precision  int
+	PrimaryKey bool
 }
 
 type CollectionDefinition struct {
