@@ -1,6 +1,7 @@
 package store
 
 import (
+	"slices"
 	"sync"
 	"sync/atomic"
 )
@@ -17,9 +18,9 @@ type CollectionDefinition struct {
 }
 
 var (
-	objects            = make(map[string]string)
+	users              = []string{}
 	collections        = make(map[string]CollectionDefinition)
-	objectsMapLock     = sync.Mutex{}
+	usersMapLock       = sync.Mutex{}
 	collectionsMapLock = sync.Mutex{}
 	collectionsRWLock  = make(map[string]*sync.RWMutex)
 	sequences          = make(map[string]int64)
@@ -46,25 +47,29 @@ func HasCollection(collectionName string) bool {
 	return ok
 }
 
-func AddObject(name string, objectType string) string {
-	objectsMapLock.Lock()
-	defer objectsMapLock.Unlock()
-	if objType, hasObject := objects[name]; hasObject && objType == objectType {
-		return "ERROR - " + objectType + " " + name + " ALREADY EXISTS"
+func AddUser(userName string) string {
+	usersMapLock.Lock()
+	defer usersMapLock.Unlock()
+	if slices.Index(users, userName) >= 0 {
+		return "ERROR - USER " + userName + " ALREADY EXISTS"
 	}
-	objects[name] = objectType
-	return "OK - CREATED " + objectType + " " + name
+	users = append(users, userName)
+	return "OK - CREATED USER " + userName
 }
 
-func AddCollection(name string, collectionType string, _ map[string]string) string {
+func AddCollection(collectionName string, collectionType string, _ map[string]string) string {
 	collectionsMapLock.Lock()
 	defer collectionsMapLock.Unlock()
-	if _, hasObject := collections[name]; hasObject {
-		return "ERROR - " + collectionType + " " + name + " ALREADY EXISTS"
+	if _, hasObject := collections[collectionName]; hasObject {
+		return "ERROR - " + collectionType + " " + collectionName + " ALREADY EXISTS"
 	}
-	collections[name] = CollectionDefinition{collectionType: collectionType}
-	collectionsRWLock[name] = &sync.RWMutex{}
-	return "OK - CREATED " + collectionType + " " + name
+	collections[collectionName] = CollectionDefinition{collectionType: collectionType}
+	collectionsRWLock[collectionName] = &sync.RWMutex{}
+	return "OK - CREATED " + collectionType + " " + collectionName
+}
+
+func GetCollection(collectionName string) CollectionDefinition {
+	return collections[collectionName]
 }
 
 func NewSequenceValue(collectionName string) int64 {

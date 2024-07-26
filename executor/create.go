@@ -20,7 +20,7 @@ func execute(statement string) string {
 		objectFields := findObjectFields(statement)
 		return store.AddCollection(objectName, objectType, objectFields)
 	} else if objectType == "USER" {
-		return store.AddObject(objectName, objectType)
+		return store.AddUser(objectName)
 	} else {
 		return "ERROR - OBJECT TYPE " + objectType + " NOT SUPPORTED"
 	}

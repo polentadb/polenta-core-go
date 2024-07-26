@@ -11,17 +11,28 @@ type InsertExecutor struct {
 }
 
 func (s InsertExecutor) Execute() Response {
-	collection := findInsertCollectionName(s.statement)
-	if !store.HasCollection(collection) {
-		fmt.Println("ERROR: INSERT INTO INVALID COLLECTION: " + collection)
-		return Response{Error: fmt.Sprintf("ERROR - INVALID INSERT - NO SUCH BAG OR TABLE: %s", collection)}
+	collectionName := findInsertCollectionName(s.statement)
+	if !store.HasCollection(collectionName) {
+		fmt.Println("ERROR: INSERT INTO INVALID COLLECTION: " + collectionName)
+		return Response{Error: fmt.Sprintf("ERROR - INVALID INSERT - NO SUCH BAG OR TABLE: %s", collectionName)}
 	}
-	fmt.Println("DEBUG: INSERT INTO: " + collection)
+	fmt.Println("DEBUG: INSERT INTO: " + collectionName)
 
-	store.AcquireCollectionWriteLock(collection)
-	defer store.ReleaseCollectionWriteLock(collection)
+	store.AcquireCollectionWriteLock(collectionName)
+	defer store.ReleaseCollectionWriteLock(collectionName)
 
-	return Response{Message: "OK - EXECUTED INSERT STATEMENT. INTO: " + collection}
+	colDef := store.GetCollection(collectionName)
+
+	if hasSequenceColumn(colDef) {
+		sequenceNewValue := store.NewSequenceValue(collectionName)
+		fmt.Println(sequenceNewValue)
+	}
+
+	return Response{Message: "OK - EXECUTED INSERT STATEMENT. INTO: " + collectionName}
+}
+
+func hasSequenceColumn(_ store.CollectionDefinition) bool {
+	return false
 }
 
 func findInsertCollectionName(sql string) string {
