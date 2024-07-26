@@ -1,10 +1,8 @@
 package store
 
 import (
-	"fmt"
 	"slices"
 	"sync"
-	"sync/atomic"
 )
 
 type ColumnDefinition struct {
@@ -26,7 +24,8 @@ var (
 	usersMapLock       = sync.Mutex{}
 	collectionsMapLock = sync.Mutex{}
 	collectionsRWLock  = make(map[string]*sync.RWMutex)
-	//sequences          = make(map[string]int64)
+	sequences          = make(map[string]int64)
+	sequencesMapLock   = sync.Mutex{}
 )
 
 func AcquireCollectionReadLock(collectionName string) {
@@ -78,6 +77,9 @@ func AddCollection(collectionName string, collectionType string, columns map[str
 	}
 	collections[collectionName] = CollectionDefinition{CollectionType: collectionType, Columns: columns}
 	collectionsRWLock[collectionName] = &sync.RWMutex{}
+	if HasSequenceColumn(collectionName) {
+		sequences[collectionName] = 0
+	}
 	return "OK - CREATED " + collectionType + " " + collectionName
 }
 
@@ -89,13 +91,8 @@ func NewSequenceValue(collectionName string) int64 {
 	if !HasSequenceColumn(collectionName) {
 		return 0
 	}
-	fmt.Println("generating new sequence value", collectionName)
-	var inc int64 = 1
-	ptr1 := collections[collectionName]
-	ptr2 := &ptr1.Sequence
-	fmt.Println("current value", collectionName, ptr1.Sequence)
-	newValue := atomic.AddInt64(ptr2, inc)
-	fmt.Println("new value", collectionName, newValue)
-	fmt.Println("seq value", collectionName, ptr1.Sequence)
-	return newValue
+	sequencesMapLock.Lock()
+	defer sequencesMapLock.Unlock()
+	sequences[collectionName] = sequences[collectionName] + 1
+	return sequences[collectionName]
 }
