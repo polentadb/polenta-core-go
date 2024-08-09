@@ -1,7 +1,7 @@
 package executor
 
 import (
-	store "github.com/polentadb/polenta-core-go/store"
+	"github.com/polentadb/polenta-core-go/storage"
 	"strconv"
 	"strings"
 )
@@ -19,9 +19,9 @@ func execute(statement string) string {
 	objectName := findObjectName(statement)
 	if objectType == "BAG" || objectType == "TABLE" {
 		columns := findCollectionColumns(statement)
-		return store.AddCollection(objectName, objectType, columns)
+		return storage.AddCollection(objectName, objectType, columns)
 	} else if objectType == "USER" {
-		return store.AddUser(objectName)
+		return storage.AddUser(objectName)
 	} else {
 		return "ERROR - OBJECT TYPE " + objectType + " NOT SUPPORTED"
 	}
@@ -37,7 +37,7 @@ func findObjectType(statement string) string {
 	return strings.Trim(parts[1], " ")
 }
 
-func findCollectionColumns(sql string) map[string]store.ColumnDefinition {
+func findCollectionColumns(sql string) map[string]storage.ColumnDefinition {
 	columns := make(map[string]string)
 	upSql := strings.TrimSpace(strings.ToUpper(sql))
 	firstParenthesis := strings.Index(upSql, "(")
@@ -51,8 +51,8 @@ func findCollectionColumns(sql string) map[string]store.ColumnDefinition {
 	return columnsAsColumnsDef(columns)
 }
 
-func columnsAsColumnsDef(columns map[string]string) map[string]store.ColumnDefinition {
-	columnsDef := make(map[string]store.ColumnDefinition)
+func columnsAsColumnsDef(columns map[string]string) map[string]storage.ColumnDefinition {
+	columnsDef := make(map[string]storage.ColumnDefinition)
 	for key, value := range columns {
 		var columnType string
 		size := 0
@@ -73,13 +73,13 @@ func columnsAsColumnsDef(columns map[string]string) map[string]store.ColumnDefin
 		} else {
 			columnType = value
 		}
-		columnsDef[key] = store.ColumnDefinition{Type: columnType, Size: size, Precision: precision}
+		columnsDef[key] = storage.ColumnDefinition{Type: columnType, Size: size, Precision: precision}
 	}
 	return columnsDef
 }
 
 func parts(subSql string) []string {
-	parts := []string{}
+	var parts []string
 	cleanedSubSql := strings.ReplaceAll(strings.TrimSpace(strings.ToUpper(subSql)), ",", ", ")
 	previous := ""
 	for _, part := range strings.Split(cleanedSubSql, ",") {

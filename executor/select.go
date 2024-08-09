@@ -2,9 +2,9 @@ package executor
 
 import (
 	"fmt"
-	data "github.com/polentadb/polenta-core-go/data"
-	sorter "github.com/polentadb/polenta-core-go/sorter"
-	store "github.com/polentadb/polenta-core-go/store"
+	"github.com/polentadb/polenta-core-go/data"
+	"github.com/polentadb/polenta-core-go/sorter"
+	"github.com/polentadb/polenta-core-go/storage"
 	"strconv"
 	"strings"
 )
@@ -15,14 +15,14 @@ type SelectExecutor struct {
 
 func (s SelectExecutor) Execute() Response {
 	collection := findSelectCollectionName(s.statement)
-	if !store.HasCollection(collection) {
+	if !storage.HasCollection(collection) {
 		fmt.Println("ERROR: SELECT FROM INVALID COLLECTION: " + collection)
 		return Response{Error: fmt.Sprintf("ERROR - INVALID SELECT - NO SUCH BAG OR TABLE: %s", collection)}
 	}
 	//fmt.Println("DEBUG: SELECT FROM: " + collection)
 
-	store.AcquireCollectionReadLock(collection)
-	defer store.ReleaseCollectionReadLock(collection)
+	storage.AcquireCollectionReadLock(collection)
+	defer storage.ReleaseCollectionReadLock(collection)
 
 	fields := "TBD"
 	where := "TBD"

@@ -2,7 +2,7 @@ package executor
 
 import (
 	"fmt"
-	"github.com/polentadb/polenta-core-go/store"
+	"github.com/polentadb/polenta-core-go/storage"
 	"strings"
 )
 
@@ -12,16 +12,16 @@ type InsertExecutor struct {
 
 func (s InsertExecutor) Execute() Response {
 	collectionName := findInsertCollectionName(s.statement)
-	if !store.HasCollection(collectionName) {
+	if !storage.HasCollection(collectionName) {
 		fmt.Println("ERROR: INSERT INTO INVALID COLLECTION: " + collectionName)
 		return Response{Error: fmt.Sprintf("ERROR - INVALID INSERT - NO SUCH BAG OR TABLE: %s", collectionName)}
 	}
 
-	store.AcquireCollectionWriteLock(collectionName)
-	defer store.ReleaseCollectionWriteLock(collectionName)
+	storage.AcquireCollectionWriteLock(collectionName)
+	defer storage.ReleaseCollectionWriteLock(collectionName)
 
-	if store.HasSequenceColumn(collectionName) {
-		sequenceNewValue := store.NewSequenceValue(collectionName)
+	if storage.HasSequenceColumn(collectionName) {
+		sequenceNewValue := storage.NewSequenceValue(collectionName)
 		fmt.Println("DEBUG: new sequence value = ", sequenceNewValue)
 	}
 
